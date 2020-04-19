@@ -1,0 +1,23 @@
+{
+  "name": "flight_connectivity",
+  "version": "1.0.0",
+  "description": "visualize connectivity between airports",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack -w --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Chong-anson/flight-connectivity.git"
+  },
+  "author": "Anson Chong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chong-anson/flight-connectivity/issues"
+  },
+  "homepage": "https://github.com/Chong-anson/flight-connectivity#readme",
+  "dependencies": {
+    "d3": "^5.15.1"
+  }
+}
