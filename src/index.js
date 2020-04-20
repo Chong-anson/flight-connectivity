@@ -5,28 +5,22 @@ import renderArc from './arc_diagram'
 import data from "../assets/data.json";
 import * as Arc from "../assets/data3.json";
 
-
 document.addEventListener("DOMContentLoaded", () =>{
 
   const filterContainer = document.getElementsByClassName("filter-box")[0];
   const form = document.createElement("form");
   form.setAttribute("id", "filter-form")
   const selectedType = document.getElementById("svg-type");
-
+  const instructionDiv = document.getElementsByClassName("instructions")[0];
   selectedType.onchange = (e) => {
     e.preventDefault();
-    // console.log(container.childNodes);
     const svgContainer = document.getElementsByClassName('svg-container')[0];
-    if (svgContainer && svgContainer.childNodes.length)
-      svgContainer.removeChild(svgContainer.childNodes[0]);
-
+    svgContainer.innerHTML = ""
    
     if (e.currentTarget.value === "arc") {
-      // db => {
-        // const graph = data.map
-      if (filterContainer && filterContainer.childNodes.length) {
-        filterContainer.removeChild(filterContainer.childNodes[0]);
-      }
+      filterContainer.innerHTML = "";
+      instructionDiv.setAttribute("class", "instructions")
+
       const select = document.createElement('select');
       select.setAttribute("id", "order");
       const options = [
@@ -51,11 +45,13 @@ document.addEventListener("DOMContentLoaded", () =>{
       // })
     }
     else if (e.currentTarget.value === "force") {
-      if (filterContainer && filterContainer.childNodes.length) {
-        filterContainer.removeChild(filterContainer.childNodes[0]);
-      }
-        const links = [];
-        const map = new Map(data.map((d) => [d.code, d]));
+
+      instructionDiv.setAttribute("class", "instructions")
+      filterContainer.innerHTML = "";
+      form.innerHTML = "";
+
+      const links = [];
+      const map = new Map(data.map((d) => [d.code, d]));
 
       data.forEach(airport => {
         const label = document.createElement("label");
@@ -119,6 +115,11 @@ document.addEventListener("DOMContentLoaded", () =>{
         console.log(links);
         renderForce({ data, links, map })
       
+    }
+    else {
+      instructionDiv.setAttribute("class", "instructions show")
+      filterContainer.innerHTML = "";
+      svgContainer.innerHTML = "";
     }
   };
 });

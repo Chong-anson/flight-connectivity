@@ -39,9 +39,19 @@
   fill: #ccc;
 }
 
-/* .filter-box {
+.right {
+  width: 40%;
+}
 
-} */
+.instructions{
+  width: 100%;
+  display: none;
+}
+
+.instructions.show{
+  display: block;
+}
+
 
 form {
   display: flex;
