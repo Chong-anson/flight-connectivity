@@ -2,7 +2,8 @@ import * as d3 from 'd3';
 import renderForce from './force_diagram.js';
 import renderHierarchy from './hierarchy_diagram';
 import renderArc from './arc_diagram'
-
+import data from "../assets/data.json";
+import * as Arc from "../assets/data3.json";
 
 
 document.addEventListener("DOMContentLoaded", () =>{
@@ -20,19 +21,19 @@ document.addEventListener("DOMContentLoaded", () =>{
       container.removeChild(container.childNodes[0]);
 
     if (e.currentTarget.value === "arc") {
-      d3.json("../assets/data3.json").then(db => {
+      // db => {
         // const graph = data.map
-        const data = db.data;
+        const data = Arc.data;
+
         const map = new Map(data.map((d) => [d.code, d]));
-        const links = db.links;
-        console.log(data);
+        const links = Arc.links;
         // console.log(links);
         renderArc({ data, map, links });
 
-      })
+      // })
     }
     else if (e.currentTarget.value === "force") {
-      d3.json("https://github.com/Chong-anson/flight-connectivity/blob/master/assets/data.json").then(data => {
+      
         const links = [];
         const map = new Map(data.map((d) => [d.code, d]));
 
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () =>{
         });
         console.log(links);
         renderForce({ data, links, map })
-      })
+      
     }
   };
 });
