@@ -29595,21 +29595,21 @@ const renderArc = ({ data, map, links }) => {
       )
     }
 
-    const t = svg.transition().duration(750);
+    const t = svg.transition().duration(250);
         
     label.transition(t)
-        .delay((d, i) => i * 100)
+        // .delay((d, i) => i * 100)
         .attrTween("transform", d => {
           const i = d3__WEBPACK_IMPORTED_MODULE_0__["interpolateNumber"](d.y, y(d.code));
           return t => `translate(${margin.left},${d.y = i(t)})`;
         });
 
     path.transition(t)
-        .delay((d, i) => i * 10)
+        // .delay((d, i) => i * 10)
         .attrTween("d", d => () => arc(d));
 
     overlay.transition(t)
-        .delay((d, i) => i * 50)
+        // .delay((d, i) => i * 50)
         .attr("y", d => y(d.code) - step / 2);
   }
 
