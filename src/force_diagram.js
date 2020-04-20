@@ -114,14 +114,14 @@ const renderForce = ({ data, links, map }) => {
       infoBox.childNodes[4].textContent = "City: " + d.city
       infoBox.childNodes[5].textContent = "Country: " + d.country
       infoBox.childNodes[6].textContent = "Number of destinations: " + d.destinations
-      const connections = document.getElementById("connections")
-      connections.innerHTML = ""
-      d.connections.forEach(connection => {
-        const li = document.createElement("li")
-        console.log(connection);
-        li.innerText = connection.city + ", " + connection.country
-        connections.append(li)
-      })
+      // const connections = document.getElementById("connections")
+      // connections.innerHTML = ""
+      // d.connections.forEach(connection => {
+      //   const li = document.createElement("li")
+      //   console.log(connection);
+      //   li.innerText = connection.city + ", " + connection.country
+      //   connections.append(li)
+      // })
     } )
     .on("mouseout", (d) => {
       svg.classed("hover", false);
@@ -137,8 +137,8 @@ const renderForce = ({ data, links, map }) => {
       // connections.innerHTML = ""
 
     });
-  const button = document.getElementById("reset")
-  console.log(button);
+  // const button = document.getElementById("reset")
+  // console.log(button);
 
   simulation.on("tick", () => {
     link

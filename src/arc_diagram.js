@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 
 const renderArc = ({ data, map, links }) => {
+  console.log(data)
   const maxTime = Math.max(...links.map((el) => +el.flight_time));
   const color = d3.scaleOrdinal(
     data.map((d) => d.country).sort(d3.ascending),
@@ -30,8 +31,8 @@ const renderArc = ({ data, map, links }) => {
   const svg = d3.select("div.svg-container")
                 .append("svg")
                 .classed("arc", true)
-                .attr("width", 1500)
-                .attr("height", 1500)
+                .attr("width", 800)
+                .attr("height", 800)
                 .style("background-color", "#fff")
                 ;
 
@@ -117,6 +118,7 @@ const renderArc = ({ data, map, links }) => {
     });
 
   function update(e) {
+    console.log(e.currentTarget.value)
     if (e.currentTarget.value === "countries"){
       y.domain(data.map( el => ({code: el.code, country: el.country}))
                         .sort((a, b) => {
@@ -132,12 +134,13 @@ const renderArc = ({ data, map, links }) => {
                         }}).map(el => el.code)
     )
     }
-    else if(e.currentTarget.value === "countries") {
+    else if(e.currentTarget.value === "destinations") {
+      console.log("chosen")
       y.domain(data.map(el => ({destinations: el.destinations, code: el.code}))
-                  .sort((a, b) => b.destinations - a.destinations )
+          .sort((a, b) => b.destinations - a.destinations )
                   .map(el => el.code)
       )}
-    else {
+    else if(e.currentTarget.value === "passengers"){
       y.domain(data.map(el => ({index: el.index, code: el.code}))
                     .sort( (a,b) => a.index - b.index)
                     .map(el => el.code)

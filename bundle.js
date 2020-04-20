@@ -29453,6 +29453,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const renderArc = ({ data, map, links }) => {
+  console.log(data)
   const maxTime = Math.max(...links.map((el) => +el.flight_time));
   const color = d3__WEBPACK_IMPORTED_MODULE_0__["scaleOrdinal"](
     data.map((d) => d.country).sort(d3__WEBPACK_IMPORTED_MODULE_0__["ascending"]),
@@ -29481,8 +29482,8 @@ const renderArc = ({ data, map, links }) => {
   const svg = d3__WEBPACK_IMPORTED_MODULE_0__["select"]("div.svg-container")
                 .append("svg")
                 .classed("arc", true)
-                .attr("width", 1500)
-                .attr("height", 1500)
+                .attr("width", 800)
+                .attr("height", 800)
                 .style("background-color", "#fff")
                 ;
 
@@ -29568,6 +29569,7 @@ const renderArc = ({ data, map, links }) => {
     });
 
   function update(e) {
+    console.log(e.currentTarget.value)
     if (e.currentTarget.value === "countries"){
       y.domain(data.map( el => ({code: el.code, country: el.country}))
                         .sort((a, b) => {
@@ -29583,12 +29585,13 @@ const renderArc = ({ data, map, links }) => {
                         }}).map(el => el.code)
     )
     }
-    else if(e.currentTarget.value === "countries") {
+    else if(e.currentTarget.value === "destinations") {
+      console.log("chosen")
       y.domain(data.map(el => ({destinations: el.destinations, code: el.code}))
-                  .sort((a, b) => b.destinations - a.destinations )
+          .sort((a, b) => b.destinations - a.destinations )
                   .map(el => el.code)
       )}
-    else {
+    else if(e.currentTarget.value === "passengers"){
       y.domain(data.map(el => ({index: el.index, code: el.code}))
                     .sort( (a,b) => a.index - b.index)
                     .map(el => el.code)
@@ -29744,14 +29747,14 @@ const renderForce = ({ data, links, map }) => {
       infoBox.childNodes[4].textContent = "City: " + d.city
       infoBox.childNodes[5].textContent = "Country: " + d.country
       infoBox.childNodes[6].textContent = "Number of destinations: " + d.destinations
-      const connections = document.getElementById("connections")
-      connections.innerHTML = ""
-      d.connections.forEach(connection => {
-        const li = document.createElement("li")
-        console.log(connection);
-        li.innerText = connection.city + ", " + connection.country
-        connections.append(li)
-      })
+      // const connections = document.getElementById("connections")
+      // connections.innerHTML = ""
+      // d.connections.forEach(connection => {
+      //   const li = document.createElement("li")
+      //   console.log(connection);
+      //   li.innerText = connection.city + ", " + connection.country
+      //   connections.append(li)
+      // })
     } )
     .on("mouseout", (d) => {
       svg.classed("hover", false);
@@ -29767,8 +29770,8 @@ const renderForce = ({ data, links, map }) => {
       // connections.innerHTML = ""
 
     });
-  const button = document.getElementById("reset")
-  console.log(button);
+  // const button = document.getElementById("reset")
+  // console.log(button);
 
   simulation.on("tick", () => {
     link
@@ -29929,60 +29932,40 @@ document.addEventListener("DOMContentLoaded", () =>{
   //   e.preventDefault();
   // }
 
-  const form = document.getElementById("filter-form");
 
-  _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.forEach(airport => {
-    const label = document.createElement("label");
-    const input = document.createElement("input");
-    input.setAttribute("name", "filter")
-    input.setAttribute("type", "checkbox");
-    input.setAttribute("value", airport.code)
-    label.innerHTML = airport.airport;
-    label.setAttribute("display", "block")
-    label.prepend(input);
-    form.prepend(label);
-
-  })
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const airportList = []
-    const filters = document.getElementsByName("filter")
-    filters.forEach(filter => {
-      if (filter.checked) {
-        airportList.push(filter.value);
-      }
-    })
-    const selectedData = _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.filter( el => airportList.includes(el.code))
-    const links = [];
-    const map = new Map(selectedData.map((d) => [d.code, d]));
-
-    selectedData.forEach((el) => {
-      el.connections.forEach((connection) => {
-        if (map.has(connection.code)) {
-          const source = el;
-          const target = map.get(connection.code);
-          const flightTime = connection.flight_time;
-          links.push({ source, target, flightTime });
-        }
-      });
-    });
-    const container = document.getElementsByClassName('svg-container')[0];
-    if (container && container.childNodes.length)
-      container.removeChild(container.childNodes[0]);
-    Object(_force_diagram_js__WEBPACK_IMPORTED_MODULE_1__["default"])({data: selectedData, links, map: null})
-  })
-
+  const filterContainer = document.getElementsByClassName("filter-box")[0];
+  const form = document.createElement("form");
+  form.setAttribute("id", "filter-form")
   const selectedType = document.getElementById("svg-type");
+
   selectedType.onchange = (e) => {
     e.preventDefault();
     // console.log(container.childNodes);
-    const container = document.getElementsByClassName('svg-container')[0];
-    if (container && container.childNodes.length)
-      container.removeChild(container.childNodes[0]);
+    const svgContainer = document.getElementsByClassName('svg-container')[0];
+    if (svgContainer && svgContainer.childNodes.length)
+      svgContainer.removeChild(svgContainer.childNodes[0]);
 
+   
     if (e.currentTarget.value === "arc") {
       // db => {
         // const graph = data.map
+      if (filterContainer && filterContainer.childNodes.length) {
+        filterContainer.removeChild(filterContainer.childNodes[0]);
+      }
+      const select = document.createElement('select');
+      select.setAttribute("id", "order");
+      const options = [
+        ["countries", "Order by Countries Name(A - Z)"],
+        ["passengers", "Order by passenger traffic"],
+        ["destinations", "Order by number of direct destinations"]
+      ]
+      options.forEach(el => {
+        const option = document.createElement("option");
+        option.setAttribute("value", el[0]);
+        option.innerHTML = el[1];
+        select.append(option)
+      })
+      filterContainer.append(select);
         const data = _assets_data3_json__WEBPACK_IMPORTED_MODULE_5__["data"];
 
         const map = new Map(data.map((d) => [d.code, d]));
@@ -29993,9 +29976,57 @@ document.addEventListener("DOMContentLoaded", () =>{
       // })
     }
     else if (e.currentTarget.value === "force") {
-
+      if (filterContainer && filterContainer.childNodes.length) {
+        filterContainer.removeChild(filterContainer.childNodes[0]);
+      }
         const links = [];
         const map = new Map(_assets_data_json__WEBPACK_IMPORTED_MODULE_4__.map((d) => [d.code, d]));
+
+      _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.forEach(airport => {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.setAttribute("name", "filter")
+        input.setAttribute("type", "checkbox");
+        input.setAttribute("value", airport.code)
+        label.innerHTML = airport.airport;
+        label.setAttribute("display", "block")
+        label.prepend(input);
+        form.prepend(label);
+
+      })
+      const button = document.createElement("button");
+      button.innerHTML = "Submit"
+      form.append(button);
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const airportList = []
+        const filters = document.getElementsByName("filter")
+        filters.forEach(filter => {
+          if (filter.checked) {
+            airportList.push(filter.value);
+          }
+        })
+        const selectedData = _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.filter(el => airportList.includes(el.code))
+        const links = [];
+        const map = new Map(selectedData.map((d) => [d.code, d]));
+
+        selectedData.forEach((el) => {
+          el.connections.forEach((connection) => {
+            if (map.has(connection.code)) {
+              const source = el;
+              const target = map.get(connection.code);
+              const flightTime = connection.flight_time;
+              links.push({ source, target, flightTime });
+            }
+          });
+        });
+        const svgContainer = document.getElementsByClassName('svg-container')[0];
+        if (svgContainer && svgContainer.childNodes.length)
+          svgContainer.removeChild(svgContainer.childNodes[0]);
+        Object(_force_diagram_js__WEBPACK_IMPORTED_MODULE_1__["default"])({ data: selectedData, links, map: null })
+      })
+      
+        filterContainer.append(form);
 
         _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.forEach((el) => {
           el.connections.forEach((connection) => {
