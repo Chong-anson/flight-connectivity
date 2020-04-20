@@ -1,16 +1,20 @@
+svg {
+  background-color: rgba(0,0,0.3);
+}
+/* 
 .hover path {
-  stroke: #ccc;
+  stroke: #555;
 }
 
 .hover text {
-  fill: #ccc;
-}
+  fill: #555;
+} */
 
 .hover g.primary text {
-  fill: black;
+  fill: #fff;
   font-weight: bold;
 }
 
 .hover g.secondary text {
-  fill: #333;
+  fill: #ccc;
 }
