@@ -38,3 +38,9 @@
 .force.hover g.secondary text {
   fill: #ccc;
 }
+
+form {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}

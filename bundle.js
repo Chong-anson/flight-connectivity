@@ -29605,7 +29605,7 @@ const renderArc = ({ data, map, links }) => {
         });
 
     path.transition(t)
-        .delay((d, i) => i * 20)
+        // .delay((d, i) => i * 20)
         .attrTween("d", d => () => arc(d));
 
     overlay.transition(t)
@@ -29636,7 +29636,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const drag = (simulation) => {
   function dragstarted(d) {
-    if (!d3__WEBPACK_IMPORTED_MODULE_0__["event"].active) simulation.alphaTarget(0.3).restart();
+    if (!d3__WEBPACK_IMPORTED_MODULE_0__["event"].active) simulation.alphaTarget(0.1).restart();
     d.fx = d.x;
     d.fy = d.y;
   }
@@ -29778,9 +29778,10 @@ const renderForce = ({ data, links, map }) => {
       .attr("y2", (d) => d.target.y);
 
     node
-      .attr("cx", (d) => d.x = Math.max(radius, Math.min(width - radius, d.x)))
-      .attr("cy", (d) => d.y = Math.max(radius, Math.min(height - radius, d.y)))
-      .attr("transform", (d) => `translate(${d.x},${d.y})`);
+      .attr("cx", (d) => d.x = Math.max(20, Math.min(width - 20, d.x)))
+      .attr("cy", (d) => d.y = Math.max(20, Math.min(height - 20, d.y)))
+      .attr("transform", (d) => `translate(${d.x},${d.y})`)
+      ;
   });
 
 };
@@ -29927,12 +29928,55 @@ document.addEventListener("DOMContentLoaded", () =>{
   // button.click = (e) => {
   //   e.preventDefault();
   // }
-  
+
+  const form = document.getElementById("filter-form");
+
+  _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.forEach(airport => {
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    input.setAttribute("name", "filter")
+    input.setAttribute("type", "checkbox");
+    input.setAttribute("value", airport.code)
+    label.innerHTML = airport.airport;
+    label.setAttribute("display", "block")
+    label.prepend(input);
+    form.prepend(label);
+
+  })
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const airportList = []
+    const filters = document.getElementsByName("filter")
+    filters.forEach(filter => {
+      if (filter.checked) {
+        airportList.push(filter.value);
+      }
+    })
+    const selectedData = _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.filter( el => airportList.includes(el.code))
+    const links = [];
+    const map = new Map(selectedData.map((d) => [d.code, d]));
+
+    selectedData.forEach((el) => {
+      el.connections.forEach((connection) => {
+        if (map.has(connection.code)) {
+          const source = el;
+          const target = map.get(connection.code);
+          const flightTime = connection.flight_time;
+          links.push({ source, target, flightTime });
+        }
+      });
+    });
+    const container = document.getElementsByClassName('svg-container')[0];
+    if (container && container.childNodes.length)
+      container.removeChild(container.childNodes[0]);
+    Object(_force_diagram_js__WEBPACK_IMPORTED_MODULE_1__["default"])({data: selectedData, links, map: null})
+  })
+
   const selectedType = document.getElementById("svg-type");
   selectedType.onchange = (e) => {
     e.preventDefault();
+    // console.log(container.childNodes);
     const container = document.getElementsByClassName('svg-container')[0];
-    console.log(container.childNodes);
     if (container && container.childNodes.length)
       container.removeChild(container.childNodes[0]);
 
@@ -29949,7 +29993,7 @@ document.addEventListener("DOMContentLoaded", () =>{
       // })
     }
     else if (e.currentTarget.value === "force") {
-      
+
         const links = [];
         const map = new Map(_assets_data_json__WEBPACK_IMPORTED_MODULE_4__.map((d) => [d.code, d]));
 

@@ -2,7 +2,7 @@ import * as d3 from "d3";
 
 const drag = (simulation) => {
   function dragstarted(d) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    if (!d3.event.active) simulation.alphaTarget(0.1).restart();
     d.fx = d.x;
     d.fy = d.y;
   }
@@ -148,9 +148,10 @@ const renderForce = ({ data, links, map }) => {
       .attr("y2", (d) => d.target.y);
 
     node
-      .attr("cx", (d) => d.x = Math.max(radius, Math.min(width - radius, d.x)))
-      .attr("cy", (d) => d.y = Math.max(radius, Math.min(height - radius, d.y)))
-      .attr("transform", (d) => `translate(${d.x},${d.y})`);
+      .attr("cx", (d) => d.x = Math.max(20, Math.min(width - 20, d.x)))
+      .attr("cy", (d) => d.y = Math.max(20, Math.min(height - 20, d.y)))
+      .attr("transform", (d) => `translate(${d.x},${d.y})`)
+      ;
   });
 
 };

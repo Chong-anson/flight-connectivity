@@ -154,7 +154,7 @@ const renderArc = ({ data, map, links }) => {
         });
 
     path.transition(t)
-        .delay((d, i) => i * 20)
+        // .delay((d, i) => i * 20)
         .attrTween("d", d => () => arc(d));
 
     overlay.transition(t)
