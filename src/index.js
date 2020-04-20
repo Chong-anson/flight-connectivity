@@ -5,6 +5,11 @@ import renderArc from './arc_diagram'
 
 
 document.addEventListener("DOMContentLoaded", () =>{
+  // const button = document.getElementById("reset");
+  // button.click = (e) => {
+  //   e.preventDefault();
+  // }
+  
   const selectedType = document.getElementById("svg-type");
   selectedType.onchange = (e) => {
     e.preventDefault();

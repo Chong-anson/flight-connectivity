@@ -26,7 +26,7 @@ const drag = (simulation) => {
 };
 
 const renderForce = ({ data, links, map }) => {
-
+  const infoBox = document.getElementsByClassName("info-box")[0];
   const maxTime = Math.max(...links.map((el) => +el.flightTime));
   const radius = 6;
   const svg = d3.select("div.svg-container")
@@ -106,14 +106,40 @@ const renderForce = ({ data, links, map }) => {
         )
         .filter(".primary")
         .raise();
+     
     })
+    .on('click', d=> {
+      infoBox.childNodes[1].textContent = "Airport Info!"
+      infoBox.childNodes[3].textContent = d.airport
+      infoBox.childNodes[4].textContent = "City: " + d.city
+      infoBox.childNodes[5].textContent = "Country: " + d.country
+      infoBox.childNodes[6].textContent = "Number of destinations: " + d.destinations
+      const connections = document.getElementById("connections")
+      connections.innerHTML = ""
+      d.connections.forEach(connection => {
+        const li = document.createElement("li")
+        console.log(connection);
+        li.innerText = connection.city + ", " + connection.country
+        connections.append(li)
+      })
+    } )
     .on("mouseout", (d) => {
       svg.classed("hover", false);
       node.classed("primary", false);
       node.classed("secondary", false);
       node.selectAll("text").attr("fill", (d) => color(d.country));
       link.classed("primary", false).style("stroke", "#333").order();
+      // infoBox.childNodes[0].textContent = ""
+      // infoBox.childNodes[1].textContent = ""
+      // infoBox.childNodes[2].textContent = ""
+      // infoBox.childNodes[3].textContent = ""
+      // const connections = document.getElementById("connections")
+      // connections.innerHTML = ""
+
     });
+  const button = document.getElementById("reset")
+  console.log(button);
+
   simulation.on("tick", () => {
     link
       .attr("x1", (d) => d.source.x)
