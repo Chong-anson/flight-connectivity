@@ -29927,11 +29927,6 @@ var _assets_data3_json__WEBPACK_IMPORTED_MODULE_5___namespace = /*#__PURE__*/__w
 
 
 document.addEventListener("DOMContentLoaded", () =>{
-  // const button = document.getElementById("reset");
-  // button.click = (e) => {
-  //   e.preventDefault();
-  // }
-
 
   const filterContainer = document.getElementsByClassName("filter-box")[0];
   const form = document.createElement("form");
@@ -29988,12 +29983,15 @@ document.addEventListener("DOMContentLoaded", () =>{
         input.setAttribute("name", "filter")
         input.setAttribute("type", "checkbox");
         input.setAttribute("value", airport.code)
-        label.innerHTML = airport.airport;
+        label.innerHTML = airport.city + "," + airport.code;
         label.setAttribute("display", "block")
         label.prepend(input);
         form.prepend(label);
 
       })
+      const heading = document.createElement("h2");
+      heading.innerText = "Choose airports to display";
+      form.prepend(heading);
       const button = document.createElement("button");
       button.innerHTML = "Submit"
       form.append(button);

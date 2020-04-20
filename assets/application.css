@@ -39,9 +39,22 @@
   fill: #ccc;
 }
 
+/* .filter-box {
+
+} */
+
 form {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   flex-wrap: wrap;
   height: 500px;
+}
+
+form h2 {
+  display: block;
+  width: 100%;
+}
+
+label {
+  width: 30%;
 }
