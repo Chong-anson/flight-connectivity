@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import renderForce from './force_diagram.js';
 import renderHierarchy from './hierarchy_diagram';
 import renderArc from './arc_diagram'
-import data from "../assets/data.json";
+
 
 
 document.addEventListener("DOMContentLoaded", () =>{
