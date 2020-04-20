@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import renderForce from './force_diagram.js';
 import renderHierarchy from './hierarchy_diagram';
 import renderArc from './arc_diagram'
+import data from "../assets/data.json";
 
 
 document.addEventListener("DOMContentLoaded", () =>{
@@ -31,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () =>{
       })
     }
     else if (e.currentTarget.value === "force") {
-      d3.json("../assets/data.json").then(data => {
+      d3.json("https://github.com/Chong-anson/flight-connectivity/blob/master/assets/data.json").then(data => {
         const links = [];
         const map = new Map(data.map((d) => [d.code, d]));
 
