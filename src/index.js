@@ -4,33 +4,61 @@ import renderHierarchy from './hierarchy_diagram';
 import renderArc from './arc_diagram'
 
 
-// document.addEventListener("DOMcontentloaded", () =>{
+document.addEventListener("DOMContentLoaded", () =>{
+  const selectedType = document.getElementById("svg-type");
+  selectedType.onchange = (e) => {
+    e.preventDefault();
+    const container = document.getElementsByClassName('svg-container')[0];
+    console.log(container.childNodes);
+    if (container && container.childNodes.length)
+      container.removeChild(container.childNodes[0]);
 
-  d3.json("../assets/data3.json").then( db => {
-    // const graph = data.map
-    const data = db.data;
-    const map = new Map(data.map((d) => [d.code, d]));
-    const links = db.links;
+    if (e.currentTarget.value === "arc") {
+      d3.json("../assets/data3.json").then(db => {
+        // const graph = data.map
+        const data = db.data;
+        const map = new Map(data.map((d) => [d.code, d]));
+        const links = db.links;
+        console.log(data);
+        // console.log(links);
+        renderArc({ data, map, links });
 
-    console.log(links);
-    const selectedType = document.getElementById("svg-type");
-    selectedType.onchange = (e) => {
-      e.preventDefault();
-      // console.log(e.target.value);
-      const container = document.getElementsByClassName('svg-container')[0];
-      console.log(container.childNodes);
-      if (container && container.childNodes.length)
-        container.removeChild(container.childNodes[0]);
-
-      if (e.currentTarget.value === "arc"){
-        renderArc({data, map, links});
-      }else if (e.currentTarget.value === "force"){
-        renderForce({data, links, map})
-      }
+      })
     }
-    // renderHierarchy({data, links});
+    else if (e.currentTarget.value === "force") {
+      d3.json("../assets/data.json").then(data => {
+        const links = [];
+        const map = new Map(data.map((d) => [d.code, d]));
 
-  })
+        data.forEach((el) => {
+          el.connections.forEach((connection) => {
+            if (map.has(connection.code)) {
+              const source = el;
+              const target = map.get(connection.code);
+              const flightTime = connection.flight_time;
+              links.push({ source, target, flightTime });
+            }
+          });
+        });
+        console.log(links);
+        renderForce({ data, links, map })
+      })
+    }
+  };
+});
+
+  // d3.json("../assets/data3.json").then( db => {
+  //   // const graph = data.map
+  //   const data = db.data;
+  //   const map = new Map(data.map((d) => [d.code, d]));
+  //   const links = db.links;
+
+  //   console.log(links);
+    
+  //   }
+    
+  // })
+  // renderHierarchy({data, links});
 
 // })
 

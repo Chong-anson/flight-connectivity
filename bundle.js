@@ -29440,17 +29440,17 @@ const renderArc = ({ data, map, links }) => {
     .domain([0, maxTime])
     .interpolator(d3__WEBPACK_IMPORTED_MODULE_0__["interpolateSpectral"]);
 
-  const margin = { top: 20, left: 520, bottom: 20, right: 20 };
+  const margin = { top: 20, left: 370, bottom: 20, right: 20 };
   const step = 22;
   const height = (data.length - 1) * step + margin.top + margin.bottom;
-  const y = d3__WEBPACK_IMPORTED_MODULE_0__["scalePoint"](data.map((d) => d.airport).sort(d3__WEBPACK_IMPORTED_MODULE_0__["ascending"]), [
+  const y = d3__WEBPACK_IMPORTED_MODULE_0__["scalePoint"](data.map((d) => d.code).sort(d3__WEBPACK_IMPORTED_MODULE_0__["ascending"]), [
     margin.top,
     height - margin.bottom,
   ]);
 
   function arc(d) {
-    const y1 = y(d.source.airport);
-    const y2 = y(d.target.airport);
+    const y1 = y(d.source.code);
+    const y2 = y(d.target.code);
     const r = Math.abs(y2 - y1) / 2;
     return `M${margin.left},${y1}A${r},${r} 0,0,${y1 < y2 ? 1 : 0} ${
       margin.left
@@ -29475,8 +29475,9 @@ const renderArc = ({ data, map, links }) => {
     .join("g")
     .attr(
       "transform",
-      (d) => `translate(${margin.left},${(d.y = y(d.airport))})`
+      (d) => `translate(${margin.left},${(d.y = y(d.code))})`
     )
+    .attr("id", d => `label-${d.index}`)
     .call((g) =>
       g
         .append("text")
@@ -29506,20 +29507,25 @@ const renderArc = ({ data, map, links }) => {
   const overlay = svg
     .append("g")
     .attr("fill", "none")
+    .attr("border", "solid 1px red")
     .attr("pointer-events", "all")
     .selectAll("rect")
     .data(data)
     .join("rect")
     .attr("width", margin.left + 40)
     .attr("height", step)
-    .attr("y", (d) => y(d.airport) - step / 2)
+    .attr("y", (d) => y(d.code) - step / 2)
     .on("mouseover", (d) => {
       svg.classed("hover", true);
       label.classed("primary", (n) => n.code === d.code);
-      label.classed(
-        "secondary",
-        (n) => n.connections.includes(d.code)
-      );
+      label.classed("excluded", true)
+      d.connections.forEach( l => {
+        d3__WEBPACK_IMPORTED_MODULE_0__["select"](`#label-${l}`).classed("secondary", true).classed("excluded", false)
+      })
+      // label.classed(
+      //   "secondary",
+      //   (n) => n.connections.includes(d.code)
+      // );
       path
         // .classed("primary", (l) => l.source === d || l.target === d)
         .style("stroke", (l) =>
@@ -29532,6 +29538,7 @@ const renderArc = ({ data, map, links }) => {
       svg.classed("hover", false);
       label.classed("primary", false);
       label.classed("secondary", false);
+      label.classed("excluded",false)
       path
         .classed("primary", false)
         .order()
@@ -29539,44 +29546,49 @@ const renderArc = ({ data, map, links }) => {
     });
 
   function update(e) {
-    y.domain(data.sort(
-      (a,b) => { 
-        if (e.currentTarget.value === "countries"){
-          if (a.country < b.country){
-            return -1;
-          }
-          else if (a.country > b.country){
-            return 1;
-          }
-          else 
-            return 0;
-        }
-        else if (e.currentTarget.value === "destinations"){
-          console.log(a);
-          return (a.destinations - b.destinations)
-        }
-        else 
-          return a.index - b.index
-      }
-    ).map(d => d.airport));
+    if (e.currentTarget.value === "countries"){
+      y.domain(data.map( el => ({code: el.code, country: el.country}))
+                        .sort((a, b) => {
+                          if (e.currentTarget.value === "countries") {
+                            if (a.country < b.country) {
+                              return -1;
+                            }
+                            else if (a.country > b.country) {
+                              return 1;
+                            }
+                            else
+                              return 0;
+                        }}).map(el => el.code)
+    )
+    }
+    else if(e.currentTarget.value === "countries") {
+      y.domain(data.map(el => ({destinations: el.destinations, code: el.code}))
+                  .sort((a, b) => b.destinations - a.destinations )
+                  .map(el => el.code)
+      )}
+    else {
+      y.domain(data.map(el => ({index: el.index, code: el.code}))
+                    .sort( (a,b) => a.index - b.index)
+                    .map(el => el.code)
+      )
+    }
 
-    const t = svg.transition()
-        // .duration(750);
-
+    const t = svg.transition().duration(750);
+        
     label.transition(t)
-        .delay((d, i) => i * 20)
+        .delay((d, i) => i * 100)
         .attrTween("transform", d => {
-          const i = d3__WEBPACK_IMPORTED_MODULE_0__["interpolateNumber"](d.y, y(d.airport));
+          const i = d3__WEBPACK_IMPORTED_MODULE_0__["interpolateNumber"](d.y, y(d.code));
           return t => `translate(${margin.left},${d.y = i(t)})`;
         });
 
     path.transition(t)
-        .duration(750 + data.length * 20)
+        .delay((d, i) => i * 10)
         .attrTween("d", d => () => arc(d));
 
     overlay.transition(t)
-        .delay((d, i) => i * 20)
-        .attr("y", d => y(d.airport) - step / 2);
+        .delay((d, i) => i * 50)
+        .attr("y", d => y(d.code) - step / 2);
   }
 
   const order = document.getElementById('order');
@@ -29625,13 +29637,14 @@ const drag = (simulation) => {
 };
 
 const renderForce = ({ data, links, map }) => {
-  const maxTime = Math.max(...links.map((el) => +el.flightTime));
 
+  const maxTime = Math.max(...links.map((el) => +el.flightTime));
+  const radius = 6;
   const svg = d3__WEBPACK_IMPORTED_MODULE_0__["select"]("div.svg-container")
                 .append("svg")
                 .classed("force", true)
-                .attr("width", 800)
-                .attr("height", 800)
+                .attr("width", 700)
+                .attr("height", 700)
                 .style("background", "black")
                 ;
   const height = +svg.attr("height");
@@ -29650,20 +29663,18 @@ const renderForce = ({ data, links, map }) => {
     .force(
       "link",
       d3__WEBPACK_IMPORTED_MODULE_0__["forceLink"](links)
-        // .id((d) => d.id)
         .distance((d) => d.flightTime / 1.7)
     )
+    .force('collision', d3__WEBPACK_IMPORTED_MODULE_0__["forceCollide"]().radius(30))
     .force("charge", d3__WEBPACK_IMPORTED_MODULE_0__["forceManyBody"]())
-    .force("center", d3__WEBPACK_IMPORTED_MODULE_0__["forceCenter"](width / 2, height / 2));
+    .force("center", d3__WEBPACK_IMPORTED_MODULE_0__["forceCenter"](width / 2, (height / 2) - 50));
 
   const link = svg
     .append("g")
     .attr("stroke", "#333")
-    .attr("stroke-opacity", 0.6)
     .selectAll("line")
     .data(links)
-    .enter()
-    .append("line")
+    .join("line")
     .attr("stroke-width", 1);
 
   const node = svg
@@ -29675,8 +29686,8 @@ const renderForce = ({ data, links, map }) => {
       g
         .append("circle")
         .attr("stroke", "#fff")
-        .attr("stroke-width", 1.5)
-        .attr("r", 5)
+        .attr("stroke-width", 1)
+        .attr("r", 6)
         .attr("fill", (d) => color(d.country))
     )
     .call((g) =>
@@ -29693,9 +29704,6 @@ const renderForce = ({ data, links, map }) => {
     .on("mouseover", (d) => {
       svg.classed("hover", true);
       node.classed("primary", (n) => n.code === d.code);
-      // node
-      //   .selectAll("text")
-      //   .attr("fill", (t) => (t.code === d.code ? "#fff" : "#555"));
       node.classed("secondary", (n) =>
         n.connections.some((l) => l.code === d.code)
       );
@@ -29722,8 +29730,8 @@ const renderForce = ({ data, links, map }) => {
       .attr("y2", (d) => d.target.y);
 
     node
-      .attr("cx", (d) => d.x)
-      .attr("cy", (d) => d.y)
+      .attr("cx", (d) => d.x = Math.max(radius, Math.min(width - radius, d.x)))
+      .attr("cy", (d) => d.y = Math.max(radius, Math.min(height - radius, d.y)))
       .attr("transform", (d) => `translate(${d.x},${d.y})`);
   });
 
@@ -29860,33 +29868,61 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// document.addEventListener("DOMcontentloaded", () =>{
+document.addEventListener("DOMContentLoaded", () =>{
+  const selectedType = document.getElementById("svg-type");
+  selectedType.onchange = (e) => {
+    e.preventDefault();
+    const container = document.getElementsByClassName('svg-container')[0];
+    console.log(container.childNodes);
+    if (container && container.childNodes.length)
+      container.removeChild(container.childNodes[0]);
 
-  d3__WEBPACK_IMPORTED_MODULE_0__["json"]("../assets/data3.json").then( db => {
-    // const graph = data.map
-    const data = db.data;
-    const map = new Map(data.map((d) => [d.code, d]));
-    const links = db.links;
+    if (e.currentTarget.value === "arc") {
+      d3__WEBPACK_IMPORTED_MODULE_0__["json"]("../assets/data3.json").then(db => {
+        // const graph = data.map
+        const data = db.data;
+        const map = new Map(data.map((d) => [d.code, d]));
+        const links = db.links;
+        console.log(data);
+        // console.log(links);
+        Object(_arc_diagram__WEBPACK_IMPORTED_MODULE_3__["default"])({ data, map, links });
 
-    console.log(links);
-    const selectedType = document.getElementById("svg-type");
-    selectedType.onchange = (e) => {
-      e.preventDefault();
-      // console.log(e.target.value);
-      const container = document.getElementsByClassName('svg-container')[0];
-      console.log(container.childNodes);
-      if (container && container.childNodes.length)
-        container.removeChild(container.childNodes[0]);
-
-      if (e.currentTarget.value === "arc"){
-        Object(_arc_diagram__WEBPACK_IMPORTED_MODULE_3__["default"])({data, map, links});
-      }else if (e.currentTarget.value === "force"){
-        Object(_force_diagram_js__WEBPACK_IMPORTED_MODULE_1__["default"])({data, links, map})
-      }
+      })
     }
-    // renderHierarchy({data, links});
+    else if (e.currentTarget.value === "force") {
+      d3__WEBPACK_IMPORTED_MODULE_0__["json"]("../assets/data.json").then(data => {
+        const links = [];
+        const map = new Map(data.map((d) => [d.code, d]));
 
-  })
+        data.forEach((el) => {
+          el.connections.forEach((connection) => {
+            if (map.has(connection.code)) {
+              const source = el;
+              const target = map.get(connection.code);
+              const flightTime = connection.flight_time;
+              links.push({ source, target, flightTime });
+            }
+          });
+        });
+        console.log(links);
+        Object(_force_diagram_js__WEBPACK_IMPORTED_MODULE_1__["default"])({ data, links, map })
+      })
+    }
+  };
+});
+
+  // d3.json("../assets/data3.json").then( db => {
+  //   // const graph = data.map
+  //   const data = db.data;
+  //   const map = new Map(data.map((d) => [d.code, d]));
+  //   const links = db.links;
+
+  //   console.log(links);
+    
+  //   }
+    
+  // })
+  // renderHierarchy({data, links});
 
 // })
 

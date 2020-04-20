@@ -11,17 +11,17 @@ const renderArc = ({ data, map, links }) => {
     .domain([0, maxTime])
     .interpolator(d3.interpolateSpectral);
 
-  const margin = { top: 20, left: 520, bottom: 20, right: 20 };
+  const margin = { top: 20, left: 370, bottom: 20, right: 20 };
   const step = 22;
   const height = (data.length - 1) * step + margin.top + margin.bottom;
-  const y = d3.scalePoint(data.map((d) => d.airport).sort(d3.ascending), [
+  const y = d3.scalePoint(data.map((d) => d.code).sort(d3.ascending), [
     margin.top,
     height - margin.bottom,
   ]);
 
   function arc(d) {
-    const y1 = y(d.source.airport);
-    const y2 = y(d.target.airport);
+    const y1 = y(d.source.code);
+    const y2 = y(d.target.code);
     const r = Math.abs(y2 - y1) / 2;
     return `M${margin.left},${y1}A${r},${r} 0,0,${y1 < y2 ? 1 : 0} ${
       margin.left
@@ -46,8 +46,9 @@ const renderArc = ({ data, map, links }) => {
     .join("g")
     .attr(
       "transform",
-      (d) => `translate(${margin.left},${(d.y = y(d.airport))})`
+      (d) => `translate(${margin.left},${(d.y = y(d.code))})`
     )
+    .attr("id", d => `label-${d.index}`)
     .call((g) =>
       g
         .append("text")
@@ -77,20 +78,25 @@ const renderArc = ({ data, map, links }) => {
   const overlay = svg
     .append("g")
     .attr("fill", "none")
+    .attr("border", "solid 1px red")
     .attr("pointer-events", "all")
     .selectAll("rect")
     .data(data)
     .join("rect")
     .attr("width", margin.left + 40)
     .attr("height", step)
-    .attr("y", (d) => y(d.airport) - step / 2)
+    .attr("y", (d) => y(d.code) - step / 2)
     .on("mouseover", (d) => {
       svg.classed("hover", true);
       label.classed("primary", (n) => n.code === d.code);
-      label.classed(
-        "secondary",
-        (n) => n.connections.includes(d.code)
-      );
+      label.classed("excluded", true)
+      d.connections.forEach( l => {
+        d3.select(`#label-${l}`).classed("secondary", true).classed("excluded", false)
+      })
+      // label.classed(
+      //   "secondary",
+      //   (n) => n.connections.includes(d.code)
+      // );
       path
         // .classed("primary", (l) => l.source === d || l.target === d)
         .style("stroke", (l) =>
@@ -103,6 +109,7 @@ const renderArc = ({ data, map, links }) => {
       svg.classed("hover", false);
       label.classed("primary", false);
       label.classed("secondary", false);
+      label.classed("excluded",false)
       path
         .classed("primary", false)
         .order()
@@ -110,44 +117,49 @@ const renderArc = ({ data, map, links }) => {
     });
 
   function update(e) {
-    y.domain(data.sort(
-      (a,b) => { 
-        if (e.currentTarget.value === "countries"){
-          if (a.country < b.country){
-            return -1;
-          }
-          else if (a.country > b.country){
-            return 1;
-          }
-          else 
-            return 0;
-        }
-        else if (e.currentTarget.value === "destinations"){
-          console.log(a);
-          return (a.destinations - b.destinations)
-        }
-        else 
-          return a.index - b.index
-      }
-    ).map(d => d.airport));
+    if (e.currentTarget.value === "countries"){
+      y.domain(data.map( el => ({code: el.code, country: el.country}))
+                        .sort((a, b) => {
+                          if (e.currentTarget.value === "countries") {
+                            if (a.country < b.country) {
+                              return -1;
+                            }
+                            else if (a.country > b.country) {
+                              return 1;
+                            }
+                            else
+                              return 0;
+                        }}).map(el => el.code)
+    )
+    }
+    else if(e.currentTarget.value === "countries") {
+      y.domain(data.map(el => ({destinations: el.destinations, code: el.code}))
+                  .sort((a, b) => b.destinations - a.destinations )
+                  .map(el => el.code)
+      )}
+    else {
+      y.domain(data.map(el => ({index: el.index, code: el.code}))
+                    .sort( (a,b) => a.index - b.index)
+                    .map(el => el.code)
+      )
+    }
 
-    const t = svg.transition()
-        // .duration(750);
-
+    const t = svg.transition().duration(750);
+        
     label.transition(t)
-        .delay((d, i) => i * 20)
+        .delay((d, i) => i * 100)
         .attrTween("transform", d => {
-          const i = d3.interpolateNumber(d.y, y(d.airport));
+          const i = d3.interpolateNumber(d.y, y(d.code));
           return t => `translate(${margin.left},${d.y = i(t)})`;
         });
 
     path.transition(t)
-        .duration(750 + data.length * 20)
+        .delay((d, i) => i * 10)
         .attrTween("d", d => () => arc(d));
 
     overlay.transition(t)
-        .delay((d, i) => i * 20)
-        .attr("y", d => y(d.airport) - step / 2);
+        .delay((d, i) => i * 50)
+        .attr("y", d => y(d.code) - step / 2);
   }
 
   const order = document.getElementById('order');

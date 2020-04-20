@@ -26,13 +26,14 @@ const drag = (simulation) => {
 };
 
 const renderForce = ({ data, links, map }) => {
-  const maxTime = Math.max(...links.map((el) => +el.flightTime));
 
+  const maxTime = Math.max(...links.map((el) => +el.flightTime));
+  const radius = 6;
   const svg = d3.select("div.svg-container")
                 .append("svg")
                 .classed("force", true)
-                .attr("width", 800)
-                .attr("height", 800)
+                .attr("width", 700)
+                .attr("height", 700)
                 .style("background", "black")
                 ;
   const height = +svg.attr("height");
@@ -54,20 +55,18 @@ const renderForce = ({ data, links, map }) => {
       "link",
       d3
         .forceLink(links)
-        // .id((d) => d.id)
         .distance((d) => d.flightTime / 1.7)
     )
+    .force('collision', d3.forceCollide().radius(30))
     .force("charge", d3.forceManyBody())
-    .force("center", d3.forceCenter(width / 2, height / 2));
+    .force("center", d3.forceCenter(width / 2, (height / 2) - 50));
 
   const link = svg
     .append("g")
     .attr("stroke", "#333")
-    .attr("stroke-opacity", 0.6)
     .selectAll("line")
     .data(links)
-    .enter()
-    .append("line")
+    .join("line")
     .attr("stroke-width", 1);
 
   const node = svg
@@ -79,8 +78,8 @@ const renderForce = ({ data, links, map }) => {
       g
         .append("circle")
         .attr("stroke", "#fff")
-        .attr("stroke-width", 1.5)
-        .attr("r", 5)
+        .attr("stroke-width", 1)
+        .attr("r", 6)
         .attr("fill", (d) => color(d.country))
     )
     .call((g) =>
@@ -97,9 +96,6 @@ const renderForce = ({ data, links, map }) => {
     .on("mouseover", (d) => {
       svg.classed("hover", true);
       node.classed("primary", (n) => n.code === d.code);
-      // node
-      //   .selectAll("text")
-      //   .attr("fill", (t) => (t.code === d.code ? "#fff" : "#555"));
       node.classed("secondary", (n) =>
         n.connections.some((l) => l.code === d.code)
       );
@@ -126,8 +122,8 @@ const renderForce = ({ data, links, map }) => {
       .attr("y2", (d) => d.target.y);
 
     node
-      .attr("cx", (d) => d.x)
-      .attr("cy", (d) => d.y)
+      .attr("cx", (d) => d.x = Math.max(radius, Math.min(width - radius, d.x)))
+      .attr("cy", (d) => d.y = Math.max(radius, Math.min(height - radius, d.y)))
       .attr("transform", (d) => `translate(${d.x},${d.y})`);
   });
 
