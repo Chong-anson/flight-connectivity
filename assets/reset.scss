@@ -1,0 +1,49 @@
+html, body, header, nav, h1, a,
+ul, li, strong, main, button, i,
+section, img, div, h2, h3,h4, p, form,
+fieldset, label, input, textarea,
+span, article, footer, time, small, select{
+  margin: 0px;
+  border: 0px;
+  padding: 0px;
+  outline: 0px;
+  /* margin-block-start: 0;
+  margin-block-end: 0; */
+
+  box-sizing: inherit;
+  font: inherit;
+  text-decoration: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+input[type="password"],
+input[type="email"],
+input[type="text"],
+input[type="submit"],
+select,
+textarea,
+button,
+option {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+select {
+  border-radius: 0; 
+}
+
+button,
+input[type="submit"] {
+  cursor: pointer;
+}

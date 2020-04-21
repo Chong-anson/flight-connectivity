@@ -1,0 +1,144 @@
+@import "./reset.scss";
+@import "./default.scss";
+
+.navbar {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+}
+
+.navbar h1{
+  font-size: 28px;
+  font-weight: 500;
+  margin-right: 40px;    
+  line-height: 2;
+}
+
+.navbar i{
+  margin-top: 3px;
+}
+
+.main-content {
+  display: flex;
+}
+
+.arc.hover g.excluded text {
+  fill: #ccc;
+}
+
+.arc.hover g.primary text {
+  fill: black;
+  font-weight: bold;
+}
+
+.arc.hover g.secondary text {
+  fill: #222;
+}
+
+
+.force hover g.primary text {
+  fill: #fff;
+  font-weight: bold;
+}
+
+.force.hover g.secondary text {
+  fill: #ccc;
+}
+
+.right {
+  width: 40%;
+  padding: 0 20px;
+}
+
+.right h2{
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.instructions{
+  width: 100%;
+  display: none;
+}
+
+.instructions h2 {
+  font-size: 24px;
+}
+
+.instructions p {
+  margin-top: 10px;
+}
+.instructions.show{
+  display: block;
+}
+
+
+#filter-form {
+  display: flex;
+  /* flex-direction: column; */
+  flex-wrap: wrap;
+  height: 500px;
+}
+
+#filter-form h2 {
+  display: block;
+  width: 100%;
+}
+
+#filter-form div{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+label {
+  width: 33%;
+}
+
+.normal-checkbox, .special-checkbox{
+    position: relative;
+    top: 3px;
+    height: 18px;
+    width: 18px;
+    margin-right: 10px;
+    outline: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -moz-transition: background-color 0.2s ease 0s, border-color 0.2s ease 0s;
+    -o-transition: background-color 0.2s ease 0s, border-color 0.2s ease 0s;
+    -webkit-transition: background-color 0.2s ease, border-color 0.2s ease;
+    -webkit-transition-delay: 0s, 0s;
+    transition: background-color 0.2s ease 0s, border-color 0.2s ease 0s;
+    background-color: white;
+    border: 1px solid #757575;
+    border-radius: 2px; 
+}
+
+.normal-checkbox:checked{
+  background-color: #40d9ac;
+  border-color: #3cc69e;
+}
+
+.normal-checkbox:checked::after{
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f00c";
+  color: white;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  position: absolute;
+  bottom: -5px;
+  left: -1px;
+}
+
+.normal-label{
+  padding-left: 6px;
+  cursor: pointer;
+}
+
+.infoBox{
+  // border: solid 2px blue;
+  margin-bottom: 30px;
+}

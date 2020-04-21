@@ -1,9 +1,8 @@
 import * as d3 from 'd3';
 import renderForce from './force_diagram.js';
-import renderHierarchy from './hierarchy_diagram';
 import renderArc from './arc_diagram'
-import data from "../assets/data.json";
-import * as Arc from "../assets/data3.json";
+import data from "../assets/data/data.json";
+import * as Arc from "../assets/data/data3.json";
 
 document.addEventListener("DOMContentLoaded", () =>{
 
@@ -23,9 +22,10 @@ document.addEventListener("DOMContentLoaded", () =>{
 
       const select = document.createElement('select');
       select.setAttribute("id", "order");
+      select.setAttribute("class", "form-control")
       const options = [
         ["countries", "Order by Countries Name(A - Z)"],
-        ["passengers", "Order by passenger traffic"],
+        ["passengers", "Order by passenger traffic "],
         ["destinations", "Order by number of direct destinations"]
       ]
       options.forEach(el => {
@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () =>{
         // console.log(links);
         renderArc({ data, map, links });
 
-      // })
     }
     else if (e.currentTarget.value === "force") {
 
@@ -59,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () =>{
         input.setAttribute("name", "filter")
         input.setAttribute("type", "checkbox");
         input.setAttribute("value", airport.code)
+        input.setAttribute("class", "normal-checkbox")
         label.innerHTML = airport.city + "," + airport.code;
         label.setAttribute("display", "block")
         label.prepend(input);
@@ -69,9 +69,13 @@ document.addEventListener("DOMContentLoaded", () =>{
       heading.innerText = "Choose airports to display";
       form.prepend(heading);
       const button = document.createElement("button");
+      const buttonContainer = document.createElement("div");
+      button.setAttribute("class","special-buttons-2")
       button.innerHTML = "Submit"
-      form.append(button);
+      buttonContainer.append(button);
+      form.append(buttonContainer);
       form.addEventListener("submit", (e) => {
+        console.log("submit")
         e.preventDefault();
         const airportList = []
         const filters = document.getElementsByName("filter")

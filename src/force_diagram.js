@@ -27,13 +27,15 @@ const drag = (simulation) => {
 
 const renderForce = ({ data, links, map }) => {
   const infoBox = document.getElementsByClassName("info-box")[0];
+  infoBox.setAttribute("class", "info-box")
+
   const maxTime = Math.max(...links.map((el) => +el.flightTime));
   const radius = 6;
   const svg = d3.select("div.svg-container")
                 .append("svg")
                 .classed("force", true)
-                .attr("width", 700)
-                .attr("height", 700)
+                .attr("width", 650)
+                .attr("height", 650)
                 .style("background", "black")
                 ;
   const height = +svg.attr("height");
@@ -109,11 +111,20 @@ const renderForce = ({ data, links, map }) => {
      
     })
     .on('click', d=> {
-      infoBox.childNodes[1].textContent = "Airport Info!"
-      infoBox.childNodes[3].textContent = d.airport
-      infoBox.childNodes[4].textContent = "City: " + d.city
-      infoBox.childNodes[5].textContent = "Country: " + d.country
-      infoBox.childNodes[6].textContent = "Number of destinations: " + d.destinations
+      const heading = document.createElement("h2");
+      heading.textContent = "Airport Info!";
+      const content = [
+        d.airport, 
+        "City: " + d.city, 
+        "Country: " + d.country, 
+        "Number of destinations: " + d.destinations 
+      ]
+      infoBox.append(heading);
+      for(let i = 0; i < 4 ; i ++){
+        const p = document.createElement("p");
+        p.textContent = content[i];
+        infoBox.append(p);
+      }
       // const connections = document.getElementById("connections")
       // connections.innerHTML = ""
       // d.connections.forEach(connection => {

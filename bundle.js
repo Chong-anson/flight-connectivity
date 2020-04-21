@@ -86,10 +86,10 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./assets/data.json":
-/*!**************************!*\
-  !*** ./assets/data.json ***!
-  \**************************/
+/***/ "./assets/data/data.json":
+/*!*******************************!*\
+  !*** ./assets/data/data.json ***!
+  \*******************************/
 /*! exports provided: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, default */
 /***/ (function(module) {
 
@@ -97,10 +97,10 @@ module.exports = JSON.parse("[{\"airport\":\"United States Hartsfield–Jackson 
 
 /***/ }),
 
-/***/ "./assets/data3.json":
-/*!***************************!*\
-  !*** ./assets/data3.json ***!
-  \***************************/
+/***/ "./assets/data/data3.json":
+/*!********************************!*\
+  !*** ./assets/data/data3.json ***!
+  \********************************/
 /*! exports provided: data, links, default */
 /***/ (function(module) {
 
@@ -29663,13 +29663,15 @@ const drag = (simulation) => {
 
 const renderForce = ({ data, links, map }) => {
   const infoBox = document.getElementsByClassName("info-box")[0];
+  infoBox.setAttribute("class", "info-box")
+
   const maxTime = Math.max(...links.map((el) => +el.flightTime));
   const radius = 6;
   const svg = d3__WEBPACK_IMPORTED_MODULE_0__["select"]("div.svg-container")
                 .append("svg")
                 .classed("force", true)
-                .attr("width", 700)
-                .attr("height", 700)
+                .attr("width", 650)
+                .attr("height", 650)
                 .style("background", "black")
                 ;
   const height = +svg.attr("height");
@@ -29742,11 +29744,20 @@ const renderForce = ({ data, links, map }) => {
      
     })
     .on('click', d=> {
-      infoBox.childNodes[1].textContent = "Airport Info!"
-      infoBox.childNodes[3].textContent = d.airport
-      infoBox.childNodes[4].textContent = "City: " + d.city
-      infoBox.childNodes[5].textContent = "Country: " + d.country
-      infoBox.childNodes[6].textContent = "Number of destinations: " + d.destinations
+      const heading = document.createElement("h2");
+      heading.textContent = "Airport Info!";
+      const content = [
+        d.airport, 
+        "City: " + d.city, 
+        "Country: " + d.country, 
+        "Number of destinations: " + d.destinations 
+      ]
+      infoBox.append(heading);
+      for(let i = 0; i < 4 ; i ++){
+        const p = document.createElement("p");
+        p.textContent = content[i];
+        infoBox.append(p);
+      }
       // const connections = document.getElementById("connections")
       // connections.innerHTML = ""
       // d.connections.forEach(connection => {
@@ -29793,114 +29804,6 @@ const renderForce = ({ data, links, map }) => {
 
 /***/ }),
 
-/***/ "./src/hierarchy_diagram.js":
-/*!**********************************!*\
-  !*** ./src/hierarchy_diagram.js ***!
-  \**********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
-
-
-
-const renderHierarchy = ({ data, links }) => {
-  const innerRadius = 400;
-  // const clust = d3.cluster().size([2 * Math.PI, radius - 100]);
-  const margin = { top: 20, left: 520, bottom: 20, right: 20 };
-
-  const color = d3__WEBPACK_IMPORTED_MODULE_0__["scaleOrdinal"](
-    data.map((d) => d.country).sort(d3__WEBPACK_IMPORTED_MODULE_0__["ascending"]),
-    d3__WEBPACK_IMPORTED_MODULE_0__["schemePastel1"]
-  );
-
-  const x = d3__WEBPACK_IMPORTED_MODULE_0__["scaleBand"]()
-    .domain(data.map((d) => d.city))
-    .range([0, 2 * Math.PI])
-    .align(0);
-
-  // const y = d3.scalePoint(data.map((d) => d.airport).sort(d3.ascending), [
-  //   0,
-  //   innerRadius,
-  //   ]);
-  console.log(((x("Hong Kong") + x.bandwidth() / 2) * 180) / Math.PI - 90);
-  // const arc = d3
-  //               .lineRadial()
-  //               .curve(d3.curveBundle.beta(0.85))
-  //               .radius((d) => d.y)
-  //               .angle((d) => x(d.city));
-  // line = d3
-  //   .lineRadial()
-  //   .curve(d3.curveBundle.beta(0.85))
-  //   .radius((d) => d.y)
-  //   .angle((d) => d.x);
-
-  // const line = d3
-  //   .lineRadial()
-  //   .curve(d3.curveBundle.beta(0.85))
-  //   .radius((d) => )
-  //   .angle((d) => d.x);
-
-  const svg = d3__WEBPACK_IMPORTED_MODULE_0__["select"]("svg");
-  const width = +svg.attr("width");
-  const height = +svg.attr("height");
-  svg
-    .attr("viewBox", `${-width / 2} ${-height / 2} ${width} ${height}`)
-    .style("width", "100%")
-    .style("height", "auto")
-    .style("font", "22px sans-serif");
-
-  svg.append("g").call((g) =>
-    g
-      .selectAll("g")
-      .data(data)
-      .join("g")
-      .attr(
-        "transform",
-        (d) => `
-          rotate(${((x(d.city) + x.bandwidth() / 2) * 180) / Math.PI - 90})
-          translate(${innerRadius},0)
-        `
-      )
-
-      .call((g) =>
-        g
-          .append("circle")
-          .attr("r", 3)
-          .attr("fill", (d) => color(d.country))
-      )
-      .call((g) =>
-        g
-          .append("text")
-          .attr("x", (d) => (x(d.city) < Math.PI ? 6 : -6))
-          .attr("dy", "0.31em")
-          .attr("text-anchor", (d) => (x(d.city) < Math.PI ? "start" : "end"))
-          .attr("transform", (d) =>
-            x(d.city) >= Math.PI ? "rotate(180)" : null
-          )
-          .attr("fill", (d) => color(d.country))
-          .text((d) => d.city)
-      )
-  );
-
-  //  const path = svg
-  //    .insert("g", "*")
-  //    .attr("fill", "none")
-  //    .attr("stroke-opacity", 0.6)
-  //    .attr("stroke-width", 1.5)
-  //    .selectAll("path")
-  //    .data(links)
-  //    .join("path")
-  //    .attr("stroke", (d) => "#333")
-  //    .attr("d", arc);
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (d3__WEBPACK_IMPORTED_MODULE_0__["hierarchy"]);
-
-/***/ }),
-
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
@@ -29912,13 +29815,11 @@ const renderHierarchy = ({ data, links }) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 /* harmony import */ var _force_diagram_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./force_diagram.js */ "./src/force_diagram.js");
-/* harmony import */ var _hierarchy_diagram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./hierarchy_diagram */ "./src/hierarchy_diagram.js");
-/* harmony import */ var _arc_diagram__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./arc_diagram */ "./src/arc_diagram.js");
-/* harmony import */ var _assets_data_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../assets/data.json */ "./assets/data.json");
-var _assets_data_json__WEBPACK_IMPORTED_MODULE_4___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../assets/data.json */ "./assets/data.json", 1);
-/* harmony import */ var _assets_data3_json__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../assets/data3.json */ "./assets/data3.json");
-var _assets_data3_json__WEBPACK_IMPORTED_MODULE_5___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../assets/data3.json */ "./assets/data3.json", 1);
-
+/* harmony import */ var _arc_diagram__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./arc_diagram */ "./src/arc_diagram.js");
+/* harmony import */ var _assets_data_data_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../assets/data/data.json */ "./assets/data/data.json");
+var _assets_data_data_json__WEBPACK_IMPORTED_MODULE_3___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../assets/data/data.json */ "./assets/data/data.json", 1);
+/* harmony import */ var _assets_data_data3_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../assets/data/data3.json */ "./assets/data/data3.json");
+var _assets_data_data3_json__WEBPACK_IMPORTED_MODULE_4___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../assets/data/data3.json */ "./assets/data/data3.json", 1);
 
 
 
@@ -29943,9 +29844,10 @@ document.addEventListener("DOMContentLoaded", () =>{
 
       const select = document.createElement('select');
       select.setAttribute("id", "order");
+      select.setAttribute("class", "form-control")
       const options = [
         ["countries", "Order by Countries Name(A - Z)"],
-        ["passengers", "Order by passenger traffic"],
+        ["passengers", "Order by passenger traffic "],
         ["destinations", "Order by number of direct destinations"]
       ]
       options.forEach(el => {
@@ -29955,14 +29857,13 @@ document.addEventListener("DOMContentLoaded", () =>{
         select.append(option)
       })
       filterContainer.append(select);
-        const data = _assets_data3_json__WEBPACK_IMPORTED_MODULE_5__["data"];
+        const data = _assets_data_data3_json__WEBPACK_IMPORTED_MODULE_4__["data"];
 
         const map = new Map(data.map((d) => [d.code, d]));
-        const links = _assets_data3_json__WEBPACK_IMPORTED_MODULE_5__["links"];
+        const links = _assets_data_data3_json__WEBPACK_IMPORTED_MODULE_4__["links"];
         // console.log(links);
-        Object(_arc_diagram__WEBPACK_IMPORTED_MODULE_3__["default"])({ data, map, links });
+        Object(_arc_diagram__WEBPACK_IMPORTED_MODULE_2__["default"])({ data, map, links });
 
-      // })
     }
     else if (e.currentTarget.value === "force") {
 
@@ -29971,14 +29872,15 @@ document.addEventListener("DOMContentLoaded", () =>{
       form.innerHTML = "";
 
       const links = [];
-      const map = new Map(_assets_data_json__WEBPACK_IMPORTED_MODULE_4__.map((d) => [d.code, d]));
+      const map = new Map(_assets_data_data_json__WEBPACK_IMPORTED_MODULE_3__.map((d) => [d.code, d]));
 
-      _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.forEach(airport => {
+      _assets_data_data_json__WEBPACK_IMPORTED_MODULE_3__.forEach(airport => {
         const label = document.createElement("label");
         const input = document.createElement("input");
         input.setAttribute("name", "filter")
         input.setAttribute("type", "checkbox");
         input.setAttribute("value", airport.code)
+        input.setAttribute("class", "normal-checkbox")
         label.innerHTML = airport.city + "," + airport.code;
         label.setAttribute("display", "block")
         label.prepend(input);
@@ -29989,9 +29891,13 @@ document.addEventListener("DOMContentLoaded", () =>{
       heading.innerText = "Choose airports to display";
       form.prepend(heading);
       const button = document.createElement("button");
+      const buttonContainer = document.createElement("div");
+      button.setAttribute("class","special-buttons-2")
       button.innerHTML = "Submit"
-      form.append(button);
+      buttonContainer.append(button);
+      form.append(buttonContainer);
       form.addEventListener("submit", (e) => {
+        console.log("submit")
         e.preventDefault();
         const airportList = []
         const filters = document.getElementsByName("filter")
@@ -30000,7 +29906,7 @@ document.addEventListener("DOMContentLoaded", () =>{
             airportList.push(filter.value);
           }
         })
-        const selectedData = _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.filter(el => airportList.includes(el.code))
+        const selectedData = _assets_data_data_json__WEBPACK_IMPORTED_MODULE_3__.filter(el => airportList.includes(el.code))
         const links = [];
         const map = new Map(selectedData.map((d) => [d.code, d]));
 
@@ -30022,7 +29928,7 @@ document.addEventListener("DOMContentLoaded", () =>{
       
         filterContainer.append(form);
 
-        _assets_data_json__WEBPACK_IMPORTED_MODULE_4__.forEach((el) => {
+        _assets_data_data_json__WEBPACK_IMPORTED_MODULE_3__.forEach((el) => {
           el.connections.forEach((connection) => {
             if (map.has(connection.code)) {
               const source = el;
@@ -30033,7 +29939,7 @@ document.addEventListener("DOMContentLoaded", () =>{
           });
         });
         console.log(links);
-        Object(_force_diagram_js__WEBPACK_IMPORTED_MODULE_1__["default"])({ data: _assets_data_json__WEBPACK_IMPORTED_MODULE_4__, links, map })
+        Object(_force_diagram_js__WEBPACK_IMPORTED_MODULE_1__["default"])({ data: _assets_data_data_json__WEBPACK_IMPORTED_MODULE_3__, links, map })
       
     }
     else {
