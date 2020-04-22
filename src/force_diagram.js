@@ -43,7 +43,7 @@ const renderForce = ({ data, links, map }) => {
   const color = d3.scaleOrdinal(
     data.map((d) => d.destinations).sort(d3.ascending),
     d3.schemeSet3
-  );in
+  );
 
   var myColor = d3
     .scaleSequential()

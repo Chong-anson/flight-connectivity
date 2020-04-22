@@ -42,6 +42,9 @@ div {
     padding: 8px;
     font-size: 16px;
     color: #555555;
+    -webkit-appearance: button;
+    margin: 8px;
+    cursor: pointer;
 }
 
 .main-content{
@@ -94,8 +97,6 @@ strong{
   font-weight: 600;
 }
 
-
-
 ul {
   margin-top: 5px;
   padding-left: 15px;
@@ -106,12 +107,7 @@ h3 {
   color: #333;
   margin-top: 5px;
 }
-// li {
-//   // font-size: ;
-//   // list-style: inside url("../assets/images/plane-solid.svg");
-//   // list-style-image: url("../assets//images//plane-solid.svg");
-// }
 
-// li::marker{
-
-// }
+input[type="checkbox"], label{
+  cursor: pointer;
+}

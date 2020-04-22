@@ -186,7 +186,7 @@ const createFilterForm = (filter = "airport") => {
         value: airport.code,
         class: "normal-checkbox"
       })
-      label.innerHTML = airport.city + "," + airport.code;
+      label.innerHTML = airport.city + ", " + airport.code;
       label.setAttribute("display", "block")
       label.prepend(input);
       filterForm.prepend(label);
@@ -237,6 +237,7 @@ const createFilterForm = (filter = "airport") => {
     }
   }
   selectAll.innerHTML = "Select All"
+  selectAll.classList.add("select")
   const clearAll = document.createElement("button");
   clearAll.setAttribute("class", "special-buttons-2")
   clearAll.onclick = (e) => {

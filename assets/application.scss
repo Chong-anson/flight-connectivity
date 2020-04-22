@@ -7,7 +7,7 @@
   display: flex;
 }
 
-.navbar div{
+.navbar .logo{
   width: 20%;
   height: 70px;
   background-position: center;
@@ -145,4 +145,23 @@ label {
 .infoBox{
   // border: solid 2px blue;
   margin-bottom: 30px;
+}
+
+
+.select-box select {
+  background-color: #0563af;
+  color: white;
+  padding: 12px;
+  width: 250px;
+  border: none;
+  font-size: 20px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  -webkit-appearance: button;
+  appearance: button;
+  outline: none;
+  margin-top: 20px;
+}
+
+.select-box select option {
+  padding: 30px;
 }
