@@ -4,7 +4,7 @@ html{
 }
 
 body {
-  font-family: "calibre", Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.42;
   color: #333333;
@@ -43,7 +43,7 @@ div {
     font-size: 16px;
     color: #555555;
     -webkit-appearance: button;
-    margin: 8px;
+    margin: 8px 0;
     cursor: pointer;
 }
 
@@ -73,22 +73,17 @@ a {
   transition: all 0.25s ease 0s;
 }
 
-.logo{
-  background-image: url(asset-path('logo.jpg'));
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
 span.icon {
   font-size: 24px;
 }
 
-.row, .space-between{
+.space-between{
     width: 100%;
     display: flex;
 };
 
 .space-between{
+  display: flex;
   justify-content: space-between;
   margin: 5px 0;
 }

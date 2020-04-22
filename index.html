@@ -2,27 +2,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css"
-      integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" crossorigin="anonymous">
   <link rel="stylesheet" href="./assets/application.scss">
   <link rel="icon" href="./assets/images/favicon.ico" />
   <script src="./bundle.js"></script>
   <title>Flight connectivity</title>
 </head>
 <body>
-  <div class="navbar">
-    <div class="logo"></div>
-    <div class="select-box">
-      <select class="form-control select" id="svg-type">  
-        <option value="">Home page</option>
-        <option value="force">Force Diagram</option>
-        <option value="arc">Arc Diagram</option>
-      </select>
+  <div class="navbar space-between">
+    <div class="left">
+      <div class="logo"></div>
+      <div class="select-box">
+        <select class="form-control select" id="svg-type">  
+          <option value="">Home page</option>
+          <option value="force">Force Diagram</option>
+          <option value="arc">Arc Diagram</option>
+        </select>
+        <!-- <button id="show-instructions">Show Instructions</button> -->
+      </div>
+    </div>
+    <div class="right">
+      <div class="profile-link">
+        <span>by Anson Chong</span>
+        <a href="https://github.com/Chong-anson">
+          <img class="icon" src="./assets/images/github.svg" alt="">
+        </a>
+        <a href="https://www.linkedin.com/in/ansonchongch/">
+          <img class="icon" src="./assets/images/linkedin.svg" alt="">
+        </a>
+        <a href="https://angel.co/u/anson-chong">
+          <img class="icon" src="./assets/images/angel_list.svg" alt="">
+        </a>
+      </div>
     </div>
   </div>
   <div class="main-content">
     <div class="svg-container"></div>
-    <div class="right">
+    <div class="right-content">
       <div class="instructions show">
         <h2>Welcome to Flight Connectivity!</h2>
         <p>A visualization of airports' connectivity.</p>

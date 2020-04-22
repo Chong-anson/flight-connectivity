@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () =>{
    
     if (e.currentTarget.value === "arc") {
       filterContainer.innerHTML = "";
+      const infoBox = document.getElementsByClassName("info-box")[0];
+      infoBox.innerHTML = "";
       instructionDiv.setAttribute("class", "instructions")
 
       const select = document.createElement('select');
