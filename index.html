@@ -11,18 +11,12 @@
 </head>
 <body>
   <div class="navbar">
-    <h1>Flight Connectivity <i class="fas fa-plane"></i></h1>
+    <div></div>
     <select class="form-control" id="svg-type">  
-      <option value="">Select Diagram</option>
+      <option value="">Home page</option>
       <option value="force">Force Diagram</option>
       <option value="arc">Arc Diagram</option>
     </select>
-<!-- 
-    <select name="" id="order">
-      <option value="countries">countries</option>
-      <option value="passengers">passenger number</option>
-      <option value="destinations">number of connections</option>
-    </select> -->
   </div>
   <div class="main-content">
     <div class="svg-container"></div>
@@ -32,11 +26,18 @@
         <p>A visualization of airports' connectivity.</p>
         <p>There are two digrams, <strong>Force</strong> and <strong>Arc</strong>.</p>
         <div class="diagram-instructions">
+          <h3>Force digram</h3>
           <p>
-            For Force digram, each nodes represent an airport, while an edge means 
-            there is a direct rounte between these airports. By default, it shows the
-            connectivity between Top 50 Busiest Airports around the globe. You can also
-            choose airports to display as you wish!
+            Each node represents an airport, while an edge means 
+            there is a direct route between these airports. 
+            The color of the node is determined by its country, where airports in the same country have the same color. 
+          </p>
+          <p>
+            Distance between connected edges is determined by their flight time. Note that this will sort of group the nodes by its continent ! 
+          </p>
+          <p>
+            By default, it shows the connectivity between Top 50 Busiest Airports 
+            around the globe. You can also choose airports to display as you wish! 
           </p>
           <ul>
             <li>
@@ -54,12 +55,24 @@
           </ul>
         </div>
         <div class="diagram-instructions">
+          <h3>Arc diagram</h3>
           <p>
-            For Arc diagram, it sorts the order of Top 20 airports as you wish!
+            It sorts the order of Top 20 airports as you wish!
             <ul>
               <li>
                 <i class="fas fa-plane"></i>
                 <strong>Hover</strong> over an airport to show its connectivity with others.
+              </li>
+            </ul>
+          </p>
+        </div>
+        <div class="diagram-instructions">
+          <p>
+            Flight data
+            <ul>
+              <li>
+                <i class="fas fa-plane"></i>
+                All data is retreived from <a href="https://www.flightsfrom.com">www.flightsfrom.com</a>  
               </li>
             </ul>
           </p>

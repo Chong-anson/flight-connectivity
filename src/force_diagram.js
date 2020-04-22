@@ -30,7 +30,6 @@ const renderForce = ({ data, links, map }) => {
   infoBox.setAttribute("class", "info-box")
 
   const maxTime = Math.max(...links.map((el) => +el.flightTime));
-  const radius = 6;
   const svg = d3.select("div.svg-container")
                 .append("svg")
                 .classed("force", true)
@@ -42,9 +41,9 @@ const renderForce = ({ data, links, map }) => {
   const width = +svg.attr("width");
   // svg.attr("viewBox", [0, 0, 20, 20]);
   const color = d3.scaleOrdinal(
-    data.map((d) => d.country).sort(d3.ascending),
-    d3.schemePastel1
-  );
+    data.map((d) => d.destinations).sort(d3.ascending),
+    d3.schemeSet3
+  );in
 
   var myColor = d3
     .scaleSequential()
@@ -111,16 +110,18 @@ const renderForce = ({ data, links, map }) => {
      
     })
     .on('click', d=> {
+      infoBox.innerHTML = "";
       const heading = document.createElement("h2");
       heading.textContent = "Airport Info!";
       const content = [
         d.airport, 
         "City: " + d.city, 
         "Country: " + d.country, 
-        "Number of destinations: " + d.destinations 
+        "Number of connections on the diagram: " + d.connections.length,
+        "Number of global destionations: " + (d.destinations - 3)
       ]
       infoBox.append(heading);
-      for(let i = 0; i < 4 ; i ++){
+      for(let i = 0; i < 5 ; i ++){
         const p = document.createElement("p");
         p.textContent = content[i];
         infoBox.append(p);

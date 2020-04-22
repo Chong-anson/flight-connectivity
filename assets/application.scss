@@ -7,11 +7,14 @@
   display: flex;
 }
 
-.navbar h1{
-  font-size: 28px;
-  font-weight: 500;
-  margin-right: 40px;    
-  line-height: 2;
+.navbar div{
+  width: 20%;
+  height: 70px;
+  background-position: center;
+  background-image: url("../assets/images/logo.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-right: 20px;
 }
 
 .navbar i{
@@ -65,7 +68,9 @@
 }
 
 .instructions p {
-  margin-top: 10px;
+  margin-top: 8px;
+  line-height: 1.5;
+  text-align: justify;
 }
 .instructions.show{
   display: block;
@@ -76,7 +81,6 @@
   display: flex;
   /* flex-direction: column; */
   flex-wrap: wrap;
-  height: 500px;
 }
 
 #filter-form h2 {
