@@ -1,7 +1,7 @@
-import * as d3 from 'd3';
+import * as d3 from "d3";
 
 const renderArc = ({ data, map, links }) => {
-  console.log(data)
+  console.log(data);
   const maxTime = Math.max(...links.map((el) => +el.flight_time));
   const color = d3.scaleOrdinal(
     data.map((d) => d.country).sort(d3.ascending),
@@ -28,15 +28,13 @@ const renderArc = ({ data, map, links }) => {
       margin.left
     },${y2}`;
   }
-  const svg = d3.select("div.svg-container")
-                .append("svg")
-                .classed("arc", true)
-                .attr("width", 800)
-                .attr("height", 800)
-                .style("background-color", "#fff")
-                ;
-
-
+  const svg = d3
+    .select("div.svg-container")
+    .append("svg")
+    .classed("arc", true)
+    .attr("width", 800)
+    .attr("height", 800)
+    .style("background-color", "#fff");
   const label = svg
     .append("g")
     .attr("font-family", "sans-serif")
@@ -45,11 +43,8 @@ const renderArc = ({ data, map, links }) => {
     .selectAll("g")
     .data(data)
     .join("g")
-    .attr(
-      "transform",
-      (d) => `translate(${margin.left},${(d.y = y(d.code))})`
-    )
-    .attr("id", d => `label-${d.index}`)
+    .attr("transform", (d) => `translate(${margin.left},${(d.y = y(d.code))})`)
+    .attr("id", (d) => `label-${d.index}`)
     .call((g) =>
       g
         .append("text")
@@ -90,18 +85,21 @@ const renderArc = ({ data, map, links }) => {
     .on("mouseover", (d) => {
       svg.classed("hover", true);
       label.classed("primary", (n) => n.code === d.code);
-      label.classed("excluded", true)
-      d.connections.forEach( l => {
-        d3.select(`#label-${l}`).classed("secondary", true).classed("excluded", false)
-      })
+      label.classed("excluded", true);
+      d.connections.forEach((l) => {
+        d3.select(`#label-${l}`)
+          .classed("secondary", true)
+          .classed("excluded", false);
+      });
       // label.classed(
       //   "secondary",
       //   (n) => n.connections.includes(d.code)
       // );
       path
-        // .classed("primary", (l) => l.source === d || l.target === d)
         .style("stroke", (l) =>
-          l.source.code === d.code || l.target.code === d.code ? myColor(l.flight_time) : "#ccc"
+          l.source.code === d.code || l.target.code === d.code
+            ? myColor(l.flight_time)
+            : "#ccc"
         )
         .filter(".primary")
         .raise();
@@ -110,7 +108,7 @@ const renderArc = ({ data, map, links }) => {
       svg.classed("hover", false);
       label.classed("primary", false);
       label.classed("secondary", false);
-      label.classed("excluded",false)
+      label.classed("excluded", false);
       path
         .classed("primary", false)
         .order()
@@ -118,56 +116,62 @@ const renderArc = ({ data, map, links }) => {
     });
 
   function update(e) {
-    console.log(e.currentTarget.value)
-    if (e.currentTarget.value === "countries"){
-      y.domain(data.map( el => ({code: el.code, country: el.country}))
-                        .sort((a, b) => {
-                          if (e.currentTarget.value === "countries") {
-                            if (a.country < b.country) {
-                              return -1;
-                            }
-                            else if (a.country > b.country) {
-                              return 1;
-                            }
-                            else
-                              return 0;
-                        }}).map(el => el.code)
-    )
-    }
-    else if(e.currentTarget.value === "destinations") {
-      console.log("chosen")
-      y.domain(data.map(el => ({destinations: el.destinations, code: el.code}))
-          .sort((a, b) => b.destinations - a.destinations )
-                  .map(el => el.code)
-      )}
-    else if(e.currentTarget.value === "passengers"){
-      y.domain(data.map(el => ({index: el.index, code: el.code}))
-                    .sort( (a,b) => a.index - b.index)
-                    .map(el => el.code)
-      )
+    console.log(e.currentTarget.value);
+    if (e.currentTarget.value === "countries") {
+      y.domain(
+        data
+          .map((el) => ({ code: el.code, country: el.country }))
+          .sort((a, b) => {
+            if (e.currentTarget.value === "countries") {
+              if (a.country < b.country) {
+                return -1;
+              } else if (a.country > b.country) {
+                return 1;
+              } else return 0;
+            }
+          })
+          .map((el) => el.code)
+      );
+    } else if (e.currentTarget.value === "destinations") {
+      console.log("chosen");
+      y.domain(
+        data
+          .map((el) => ({ destinations: el.destinations, code: el.code }))
+          .sort((a, b) => b.destinations - a.destinations)
+          .map((el) => el.code)
+      );
+    } else if (e.currentTarget.value === "passengers") {
+      y.domain(
+        data
+          .map((el) => ({ index: el.index, code: el.code }))
+          .sort((a, b) => a.index - b.index)
+          .map((el) => el.code)
+      );
     }
 
     const t = svg.transition().duration(750);
-        
-    label.transition(t)
-        .delay((d, i) => i * 20)
-        .attrTween("transform", d => {
-          const i = d3.interpolateNumber(d.y, y(d.code));
-          return t => `translate(${margin.left},${d.y = i(t)})`;
-        });
 
-    path.transition(t)
-        // .delay((d, i) => i * 20)
-        .attrTween("d", d => () => arc(d));
+    label
+      .transition(t)
+      .delay((d, i) => i * 20)
+      .attrTween("transform", (d) => {
+        const i = d3.interpolateNumber(d.y, y(d.code));
+        return (t) => `translate(${margin.left},${(d.y = i(t))})`;
+      });
 
-    overlay.transition(t)
-        .delay((d, i) => i * 50)
-        .attr("y", d => y(d.code) - step / 2);
+    path
+      .transition(t)
+      // .delay((d, i) => i * 20)
+      .attrTween("d", (d) => () => arc(d));
+
+    overlay
+      .transition(t)
+      .delay((d, i) => i * 50)
+      .attr("y", (d) => y(d.code) - step / 2);
   }
 
-  const order = document.getElementById('order');
-  order.addEventListener("change", update)
+  const order = document.getElementById("order");
+  order.addEventListener("change", update);
 };
-
 
 export default renderArc;

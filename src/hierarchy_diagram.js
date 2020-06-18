@@ -1,5 +1,5 @@
-import * as d3 from 'd3';
-import { hierarchy } from 'd3';
+import * as d3 from "d3";
+import { hierarchy } from "d3";
 
 const renderHierarchy = ({ data, links }) => {
   const innerRadius = 400;
@@ -21,7 +21,7 @@ const renderHierarchy = ({ data, links }) => {
   //   0,
   //   innerRadius,
   //   ]);
-  console.log(((x("Hong Kong") + x.bandwidth() / 2) * 180) / Math.PI - 90);
+  // console.log(((x("Hong Kong") + x.bandwidth() / 2) * 180) / Math.PI - 90);
   // const arc = d3
   //               .lineRadial()
   //               .curve(d3.curveBundle.beta(0.85))

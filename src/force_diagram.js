@@ -27,16 +27,16 @@ const drag = (simulation) => {
 
 const renderForce = ({ data, links, map }) => {
   const infoBox = document.getElementsByClassName("info-box")[0];
-  infoBox.setAttribute("class", "info-box")
+  infoBox.setAttribute("class", "info-box");
 
   const maxTime = Math.max(...links.map((el) => +el.flightTime));
-  const svg = d3.select("div.svg-container")
-                .append("svg")
-                .classed("force", true)
-                .attr("width", 650)
-                .attr("height", 650)
-                .style("background", "black")
-                ;
+  const svg = d3
+    .select("div.svg-container")
+    .append("svg")
+    .classed("force", true)
+    .attr("width", 650)
+    .attr("height", 650)
+    .style("background", "black");
   const height = +svg.attr("height");
   const width = +svg.attr("width");
   // svg.attr("viewBox", [0, 0, 20, 20]);
@@ -54,13 +54,11 @@ const renderForce = ({ data, links, map }) => {
     .forceSimulation(data)
     .force(
       "link",
-      d3
-        .forceLink(links)
-        .distance((d) => d.flightTime / 1.7)
+      d3.forceLink(links).distance((d) => d.flightTime / 1.7)
     )
-    .force('collision', d3.forceCollide().radius(30))
+    .force("collision", d3.forceCollide().radius(30))
     .force("charge", d3.forceManyBody())
-    .force("center", d3.forceCenter(width / 2, (height / 2) - 50));
+    .force("center", d3.forceCenter(width / 2, height / 2 - 50));
 
   const link = svg
     .append("g")
@@ -107,21 +105,20 @@ const renderForce = ({ data, links, map }) => {
         )
         .filter(".primary")
         .raise();
-     
     })
-    .on('click', d=> {
+    .on("click", (d) => {
       infoBox.innerHTML = "";
       const heading = document.createElement("h2");
       heading.textContent = "Airport Info!";
       const content = [
-        d.airport, 
-        "City: " + d.city, 
-        "Country: " + d.country, 
+        d.airport,
+        "City: " + d.city,
+        "Country: " + d.country,
         "Number of connections on the diagram: " + d.connections.length,
-        "Number of global destionations: " + (d.destinations - 3)
-      ]
+        "Number of global destionations: " + (d.destinations - 3),
+      ];
       infoBox.append(heading);
-      for(let i = 0; i < 5 ; i ++){
+      for (let i = 0; i < 5; i++) {
         const p = document.createElement("p");
         p.textContent = content[i];
         infoBox.append(p);
@@ -134,7 +131,7 @@ const renderForce = ({ data, links, map }) => {
       //   li.innerText = connection.city + ", " + connection.country
       //   connections.append(li)
       // })
-    } )
+    })
     .on("mouseout", (d) => {
       svg.classed("hover", false);
       node.classed("primary", false);
@@ -147,7 +144,6 @@ const renderForce = ({ data, links, map }) => {
       // infoBox.childNodes[3].textContent = ""
       // const connections = document.getElementById("connections")
       // connections.innerHTML = ""
-
     });
   // const button = document.getElementById("reset")
   // console.log(button);
@@ -160,12 +156,10 @@ const renderForce = ({ data, links, map }) => {
       .attr("y2", (d) => d.target.y);
 
     node
-      .attr("cx", (d) => d.x = Math.max(20, Math.min(width - 20, d.x)))
-      .attr("cy", (d) => d.y = Math.max(20, Math.min(height - 20, d.y)))
-      .attr("transform", (d) => `translate(${d.x},${d.y})`)
-      ;
+      .attr("cx", (d) => (d.x = Math.max(20, Math.min(width - 20, d.x))))
+      .attr("cy", (d) => (d.y = Math.max(20, Math.min(height - 20, d.y))))
+      .attr("transform", (d) => `translate(${d.x},${d.y})`);
   });
-
 };
 
 export default renderForce;
